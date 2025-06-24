@@ -56,4 +56,27 @@ public class ShortenUrlControllerTest {
         .andExpect(jsonPath("$.redirectUrl").value(originalUrl));
   }
 
+  @Test
+  public void shouldFail() throws Exception{
+    String originalUrl = "";
+    String redirectCode = "muPNCjSuTq14";
+
+    ShortenUrlRequest request = ShortenUrlRequest.builder()
+        .url(originalUrl).build();
+
+    ShortenUrlResponse response = ShortenUrlResponse.builder()
+        .id(1L)
+        .shortCode(redirectCode)
+        .redirectUrl(originalUrl).build();
+
+    when(shortenerService.createShortUrl(any(ShortenUrlRequest.class)))
+        .thenReturn(response);
+
+    // When & Then
+    mockMvc.perform(post("/api/v1/urls")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request)))
+        .andExpect(status().isBadRequest());
+  }
+
 }

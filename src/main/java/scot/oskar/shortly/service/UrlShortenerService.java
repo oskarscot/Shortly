@@ -8,4 +8,5 @@ public interface UrlShortenerService {
 
   ShortenUrlResponse createShortUrl(@NonNull ShortenUrlRequest request);
 
+  ShortenUrlResponse retrieveById(Long id);
 }

@@ -4,6 +4,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import scot.oskar.shortly.dto.ShortenUrlRequest;
 import scot.oskar.shortly.dto.ShortenUrlResponse;
+import scot.oskar.shortly.exception.ResourceNotFoundException;
 import scot.oskar.shortly.model.ShortUrl;
 import scot.oskar.shortly.repository.ShortUrlRepository;
 import scot.oskar.shortly.service.UrlShortenerService;
@@ -35,5 +36,13 @@ public class UrlShortenerServiceImpl implements UrlShortenerService {
         .shortCode(shortCode)
         .redirectUrl(request.getUrl())
         .build();
+  }
+
+  @Override
+  public ShortenUrlResponse retrieveById(Long id) {
+    final ShortUrl shortUrl = urlRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("url", "id", id));
+
+    return ShortenUrlResponse.fromShortUrl(shortUrl);
   }
 }
